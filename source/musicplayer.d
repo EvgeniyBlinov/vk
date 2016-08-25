@@ -257,7 +257,7 @@ class mpv: Thread {
       return;
     }
 
-    //dbm("mpv - req cmd: " ~ cmd);
+    dbm("mpv - req cmd: " ~ cmd);
 
     auto s_answ = comm.send(cmd ~ "\n");
     if(s_answ == Socket.ERROR) {
@@ -291,13 +291,16 @@ class mpv: Thread {
         cm.object["command"].array ~= JSONValue("quit");
         break;
       case ipcCmd.load:
-        cm.object["command"].array ~= JSONValue("loadfile");
-        cm.object["command"].array ~= JSONValue(c.strargument);
-        break;
+        //cm.object["command"].array ~= JSONValue("loadfile");
+        //cm.object["command"].array ~= JSONValue(c.strargument);
+        //cm.object["command"].array ~= JSONValue("replace");
+        req("{\"command\":[\"loadfile\", \"" ~ c.strargument.to!string ~ "\", \"replace\"]}");
+        return;
       default: assert(0);
     }
 
-    dbm("mpv - cmd: " ~ c.command.to!string);
+    //dbm("mpv - cmd: " ~ c.command.to!string);
+    //dbm("mpv - cm.toString: " ~ cm.toString());
 
     req(cm.toString());
   }
@@ -450,7 +453,7 @@ class mpv: Thread {
         remove(socketPath);
     }
     catch(FileException e) {
-        //dbm("socket not found")
+        dbm("socket not found");
     }
   }
 
